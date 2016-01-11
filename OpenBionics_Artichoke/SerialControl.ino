@@ -412,6 +412,9 @@ void startUpMessages(void)
 {
 	MYSERIAL.print("Open Bionics - Artichoke V");
   MYSERIAL.println((float)VERSION_N);
+  
+  MYSERIAL.print(textString.board[OB_BOARD]);
+  MYSERIAL.println(" board");
 
 	MYSERIAL.print(textString.right_left[advancedSettings.handFlag-1]);
 	MYSERIAL.println(" Hand");
@@ -474,7 +477,7 @@ void printInstructions(void)
 	MYSERIAL.println("Command     Description");
 	MYSERIAL.println("F#          Finger, where # is the finger number (F0 - F4)");
 	MYSERIAL.println("F# P50      Finger # to position 50 (P0 - P100)");
-	MYSERIAL.println("F# S255     Finger # at speed 255 (S0-S255)");
+	MYSERIAL.println("F# S255     Finger # at speed 255 (S0 - S255)");
 	MYSERIAL.print("\n");
 	MYSERIAL.println("Direction (O, C)");
 	MYSERIAL.println("Command     Description");

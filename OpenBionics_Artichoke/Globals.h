@@ -151,6 +151,7 @@ struct textStringType
 	const char* right_left[2] = {"Right","Left"};				// hand types
 	const char* disabled_enabled[2] = {"Disabled","Enabled"};   // motor states
 	const char* grips[NUM_GRIPS+1] = {"Fist","Palm","Thumbs Up","Point","Pinch","Tripod","Finger Roll"};  // grip names
+  const char* board[4] = {"Adult","Four Motor","Child","Almond"};      // board names
 };
 extern struct textStringType textString;
 
@@ -160,6 +161,7 @@ extern int currentDir;
 
 // SOFTWARE VERSION NUMBER
 #define VERSION_N  1.0
+#define OB_BOARD   3
 
 #endif
 
