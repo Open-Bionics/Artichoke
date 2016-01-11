@@ -4,4 +4,4 @@ Open Bionics Robotics is the Open Source branch of the Open Bionics company, in 
 
 Included in this repositry;
 
-- Artichoke - The software release for Open Bionics robotic hand kits (requires FingerLib.h)
+- Artichoke - The software release for Open Bionics robotic hand kits, requires [FingerLib.h] ( https://github.com/Open-Bionics/FingerLib )
