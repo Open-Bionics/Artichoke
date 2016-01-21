@@ -30,7 +30,7 @@
 *
 *	Artichoke Description
 *
-*		- Simple hand control software designed to run on the Open Bionics Almond hand controller
+*		- Simple hand control firmware designed to run on the Open Bionics Almond hand controller
 *		- Uses FingerLib.h for low level finger control, which allows fingers to be treated as servos
 *		- Uses either inbuilt ADC or external I2C ADC for muscle sensing and hand control
 *		- Allows hand control via Serial (baud 38400), enter '?' to view available Serial commands

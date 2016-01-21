@@ -18,7 +18,7 @@
 
 // Architecture specific include
 #ifndef ARDUINO_AVR_MEGA2560
-#error "This software only supports boards with an AVR or SAMD processor."
+#error "This firmware only supports boards with an AVR or SAMD processor."
 #endif
 
 // Uncomment any of the following to enable I2C_ADC muscle control
@@ -159,7 +159,7 @@ extern struct textStringType textString;
 extern int currentGrip;				// current grip pattern for muscle sense change
 extern int currentDir;
 
-// SOFTWARE VERSION NUMBER
+// FIRMWARE VERSION NUMBER
 #define VERSION_N  1.0
 #define OB_BOARD   3
 
