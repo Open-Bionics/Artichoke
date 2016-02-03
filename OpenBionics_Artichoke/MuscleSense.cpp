@@ -8,17 +8,17 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	MuscleSense
+*	MuscleSense.cpp
 *
 */
 
-// BUFFER SIZES
-#define NUM_MUSC_SAMP	150
-#define NUM_NOISE_SAMP	NUM_MUSC_SAMP
-#define NUM_DIR_SAMP	200
+#include <Arduino.h>			// for type definitions
+#include <FingerLib.h>			// for MYSERIAL
+#include "Globals.h"
+#include "Utils.h"
+#include "MuscleSense.h"
+#include "Animation.h"
 
-// number of milliseconds before each grip change
-#define GRIP_CHANGE_INTERVAL	700
 
 // BUFFERS
 static int readingsBuff[2][NUM_MUSC_SAMP];				// raw signal readings
@@ -28,6 +28,10 @@ static int armDirBuff[NUM_DIR_SAMP];					// calculated arm directions
 // MUSCLE VALUES
 static int noiseFloor[2];
 static int thresh[2];
+
+int musclePins[2];				// muscle sense ADC pin names
+int printADCvals = 0;			// flag to print muscle ADC readings
+int noiseFloorFlag = 0;			// flag to indicate if noise floor has been calculated
 
 void muscleControl(void)
 {
@@ -53,7 +57,7 @@ void muscleControl(void)
 	determineArmDirection(signal);
 	
 	// print ADC values if M3 is enabled
-	if(muscle.printADCvals)
+	if(printADCvals)
 	printADCValues(signal, activation, armDirBuff[NUM_DIR_SAMP-1]);
 	
 	// if grip change enabled (M4 to toggle)
@@ -108,7 +112,7 @@ int readMuscleSensor(int muscleNum)
 	#else
 	// read muscle value from pin
 	noInterrupts();
-	readVal = analogRead(muscle.pins[muscleNum]);
+	readVal = analogRead(musclePins[muscleNum]);
 	interrupts();
 	#endif
 	

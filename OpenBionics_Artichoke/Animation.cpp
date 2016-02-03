@@ -8,10 +8,15 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	Animation
+*	Animation.cpp
 *
 */
 
+#include <Arduino.h>			// for type definitions
+#include <FingerLib.h>			// for MYSERIAL
+#include "Globals.h"
+
+#include "Animation.h"
 #include "AnimationPositions.h"
 
 /* 

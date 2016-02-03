@@ -11,14 +11,16 @@
 *	Globals.h
 *
 */
+
 #ifndef _GLOBALS_h
 #define _GLOBALS_h
 
 #include <Arduino.h>	// init data types (uint8_t...)
+#include <FingerLib.h>
 
 // Architecture specific include
 #ifndef ARDUINO_AVR_MEGA2560
-#error "This firmware only supports boards with an AVR or SAMD processor."
+#error "This software only supports boards with an AVR processor."
 #endif
 
 // Uncomment any of the following to enable I2C_ADC muscle control
@@ -66,50 +68,12 @@
 // DEFAULTS
 #define FULLY_OPEN		MIN_FINGER_POS		// fully open position for the hand, from FingerLib.h
 #define FULLY_CLOSED	MAX_FINGER_POS		// fully closed position for the hand, from FingerLib.h
-#define MAX_BUF			64					// maximum size of Serial incoming serialCmd.buff
-// MUSCLE SENSE
-#define NUM_SAMPLES				100			// size of muscle readings serialCmd.buff   // default 500
-#define NUM_PEAKS				8			// size of previous peaks serialCmd.buff
-#define DEFAULT_PEAKS			900			// initial value to be loaded into default peaks buffer
-#define NUM_DIR_SAMPLES			200			// size of previous arm movements buffer
-#define MUSCLE_POS_INCREMENT	4			// distance to move when using muscle position control  // default 2
-#define NOISE_OFFSET			300			// don't include any value greater than noise floor + NOISE_OFFSET
 
 // FINGERLIB FINGER CLASS
 extern Finger finger[NUM_FINGERS];
-
-// MUSCLE SENSE
-struct muscleType
-{
- 	int pins[2];				// muscle sense ADC pin names
- 	int printADCvals = 0;       // flag to print muscle ADC readings
- 	int noiseFloorFlag = 0;     // flag to indicate if noise floor has been calculated 
-};
-extern struct muscleType muscle;
-
-// SERIAL CONTROL
-struct serialCmdType
-{
-	char cmdBuff[MAX_BUF];	// buffer and variable to store incoming Serial string
-	char* strPtr;           // pointer to char used for codeSeen() and codeVal()
-	int cmdsToGet = 0;      // number of commands left in buffer (promotes expansion to ring buffer in future)
-	// serial flags
-	int fingerNum = BLANK;
-	int gripNum = BLANK;
-	int direction = BLANK;
-	int stopPos = BLANK;
-	int speed = BLANK;
-	int advancedFlag = BLANK;
-	int instructionsFlag = BLANK;
-	int muscleCtrlFlag = BLANK;
-	int handFlag = BLANK;
-	int demoFlag = BLANK;
-	int sensitivityAdjust = BLANK;
-	int resetFlag = BLANK;
-	int noiseFloor = BLANK;
-	int holdTime = BLANK;  
-};
-extern struct serialCmdType serialCmd;
+// FINGER & HAND STATES
+extern int currentGrip;				// current grip pattern for muscle sense change
+extern int currentDir;
 
 // ADVANCED SETTINGS
 struct advancedSettingsType
@@ -135,33 +99,22 @@ struct userSettingsType
 };
 extern struct userSettingsType userSettings;
 
-// DEMO MODE
-struct demoType
-{
-  int flag = 0;
-  int gripDuration = 800;    // amount of time each grip runs in demo mode (milliseconds)
-};
-extern struct demoType demo;
-
 // TEXT STRINGS
 struct textStringType
 {
 	const char* open_close[3] = {"Open","Close","None"};				// hand/finger directions
-	const char* off_on[2] = {"OFF","ON"};						// states
-	const char* right_left[2] = {"Right","Left"};				// hand types
-	const char* disabled_enabled[2] = {"Disabled","Enabled"};   // motor states
+	const char* off_on[2] = {"OFF","ON"};								// states
+	const char* right_left[2] = {"Right","Left"};						// hand types
+	const char* disabled_enabled[2] = {"Disabled","Enabled"};			// motor states
+	const char* board[4] = {"Adult","Four Motor","Child","Almond"};     // board names
 	const char* grips[NUM_GRIPS+1] = {"Fist","Palm","Thumbs Up","Point","Pinch","Tripod","Finger Roll"};  // grip names
-  const char* board[4] = {"Adult","Four Motor","Child","Almond"};      // board names
+	
 };
 extern struct textStringType textString;
 
-// FINGER & HAND LATCH_STATE_LOCS
-extern int currentGrip;				// current grip pattern for muscle sense change
-extern int currentDir;
 
-// FIRMWARE VERSION NUMBER
+// SOFTWARE VERSION NUMBER
 #define VERSION_N  1.0
 #define OB_BOARD   3
 
-#endif
-
+#endif /*_GLOBALS_h*/

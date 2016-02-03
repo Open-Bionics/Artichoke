@@ -8,14 +8,25 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	OpenBionics_Artichoke
+*	OpenBionics_Artichoke.ino
 *
 */
+
 #include <FingerLib.h>			// This library can be downloaded from https://github.com/Open-Bionics
 #include <Wire.h>  
 #include <EEPROM.h>
+
 #include "Globals.h"
+
+#include "Animation.h"
+#include "Demo.h"
+#include "MotorControl.h"
+#include "MuscleSense.h"
+#include "PinManagement.h"
+#include "SerialControl.h"
+#include "TimerManagement.h"
 #include "Utils.h"
+
 
 
 /***************************************************************************************************
@@ -23,14 +34,14 @@
 *	Open Bionics - Artichoke Release Notes
 *
 *	Version	|	Date		|	Notes
-*	V1.0	|	08/01/16	|	Initial release for Ada hand and Almond boards using Atmega 2560
-*			|				|
+*	V1.0.0	|	08/01/16	|	Initial release for Ada hand and Almond boards using Atmega 2560
+*	V1.0.1	|	03/02/16	|	Modified formatting and cleaned up
 *			|				|
 *
 *
 *	Artichoke Description
 *
-*		- Simple hand control firmware designed to run on the Open Bionics Almond hand controller
+*		- Simple hand control software designed to run on the Open Bionics Almond hand controller
 *		- Uses FingerLib.h for low level finger control, which allows fingers to be treated as servos
 *		- Uses either inbuilt ADC or external I2C ADC for muscle sensing and hand control
 *		- Allows hand control via Serial (baud 38400), enter '?' to view available Serial commands
@@ -62,7 +73,7 @@ void loop()
 		fingerControl(serialCmd.fingerNum, serialCmd.stopPos, serialCmd.direction, serialCmd.speed);				
 	if (serialCmd.gripNum != BLANK)				// grip control
 		gripMovement(serialCmd.gripNum, serialCmd.stopPos, serialCmd.direction, serialCmd.speed);
-	if (demo.flag)								// demo mode
+	if (demoFlag)								// demo mode
 		demoMode();
 
 	clearAll();									// clear all serial command serialCmd.buffs

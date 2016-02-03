@@ -8,9 +8,15 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	MotorControl
+*	MotorControl.cpp
 *
 */
+
+#include <Arduino.h>			// for type definitions
+#include <FingerLib.h>			// for MYSERIAL
+#include "Globals.h"
+
+#include "MotorControl.h"
 
 
 void fingerControl(int fingerNumber, int stopPos, int fingerDirection, int fingerSpeed)

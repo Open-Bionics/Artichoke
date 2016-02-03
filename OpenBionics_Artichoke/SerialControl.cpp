@@ -8,9 +8,24 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	SerialControl
+*	SerialControl.cpp
 *
 */
+
+
+#include <Arduino.h>			// for type definitions
+#include <FingerLib.h>			// for MYSERIAL
+#include "Globals.h"
+
+#include "SerialControl.h"
+#include "Utils.h"
+#include "PinManagement.h"
+#include "MuscleSense.h"
+#include "Demo.h"
+#include "MotorControl.h"
+
+struct serialCmdType serialCmd;
+
 
 void serialEvent()
 {
@@ -171,7 +186,7 @@ void manageSerialSettings(void)
 		if(serialCmd.speed != BLANK)
 			MYSERIAL.println(serialCmd.speed);
 		else
-			MYSERIAL.println(finger[serialCmd.fingerNum].readTargSpeed());
+			MYSERIAL.println(finger[serialCmd.fingerNum].readTargetSpeed());
 	}
 	else if(serialCmd.gripNum != BLANK)
 	{
@@ -196,7 +211,7 @@ void manageSerialSettings(void)
 		else
 		{
 			int fingerToRead = (serialCmd.gripNum==THUMBSUP_GRIP)?FINGER0:FINGER1;
-			MYSERIAL.println(finger[fingerToRead].readTargSpeed());
+			MYSERIAL.println(finger[fingerToRead].readTargetSpeed());
 		}
 			
 		MYSERIAL.print("\n");
@@ -213,7 +228,7 @@ void manageSerialSettings(void)
 		{
 			case 0: // demo mode
 				advancedSettings.demoFlag = !advancedSettings.demoFlag;   // toggle flag
-				demo.flag = advancedSettings.demoFlag;      
+				demoFlag = advancedSettings.demoFlag;      
 				MYSERIAL.print("Demo mode toggled ");
 				MYSERIAL.println(textString.off_on[advancedSettings.demoFlag]); // print ON/OFF
 				break;
@@ -274,9 +289,9 @@ void manageSerialSettings(void)
 			case 3:             // print muscle readings
 				if(advancedSettings.muscleCtrlFlag != 0)
 				{
-					muscle.printADCvals = !muscle.printADCvals;
+					printADCvals = !printADCvals;
 					MYSERIAL.print("Display muscle readings ");
-					MYSERIAL.println(textString.off_on[muscle.printADCvals]);     // print ON/OFF
+					MYSERIAL.println(textString.off_on[printADCvals]);     // print ON/OFF
 				}
 				break;
 			case 4:             // enable/disable grip change
@@ -313,7 +328,7 @@ void manageSerialSettings(void)
  
 	else if(serialCmd.demoFlag == 0) // if 'D'
 	{
-		demo.flag = 1;
+		demoFlag = 1;
 		MYSERIAL.println("Demo Mode");
 		MYSERIAL.println(" The hand is only responsive to serial commands\n at the end of each demo cycle");
 	}
@@ -356,7 +371,7 @@ void setDefaults(void)
 		initialEEPROMconfig();		// if running for the first time, write default values to EEPROM
 			
 	currentGrip = FIST_GRIP;
-	demo.flag = advancedSettings.demoFlag;
+	demoFlag = advancedSettings.demoFlag;
 	
 	clearAll();       // set all serial/command serialCmd.buff variables to -1
 
@@ -365,7 +380,7 @@ void setDefaults(void)
 void clearAll(void)    //clear all input variables for the next string
 {
 	int i;
-	for(i=0;i<MAX_BUF;i++)
+	for(i=0;i<SERIAL_BUF_SIZE;i++)
 	{
 		serialCmd.cmdBuff[i] = 0;
 	}

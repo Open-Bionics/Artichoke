@@ -8,7 +8,7 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	AnimationPositions
+*	AnimationPositions.h
 *
 */
 

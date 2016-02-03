@@ -8,9 +8,17 @@
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
 *
-*	PinManagement
+*	PinManagement.cpp
 *
 */
+
+#include <Arduino.h>			// for type definitions
+#include <FingerLib.h>			// for MYSERIAL
+#include "Globals.h"
+
+#include "PinManagement.h"
+#include "MuscleSense.h"
+
 
 void IOconfig(void)   // assign pins for each finger, store pins within list and set as INPUT/OUTPUT
 {
@@ -25,8 +33,8 @@ void IOconfig(void)   // assign pins for each finger, store pins within list and
 		
 		ADC2.begin();            // initialise I2C_ADC for muscle sensing
 	#else
-		pinMode(muscle.pins[0],INPUT);		// if using standard ADC, config pins
-		pinMode(muscle.pins[1],INPUT);
+		pinMode(musclePins[0],INPUT);		// if using standard ADC, config pins
+		pinMode(musclePins[1],INPUT);
 	#endif
 }
 
@@ -49,6 +57,6 @@ void pinAssignment(void)
     finger[4].attach(3,6,A1);         // attach the direction pins and the analog sense pins for each motor
   }
   
-  muscle.pins[0] = A6;
-  muscle.pins[1] = A7;
+  musclePins[0] = A6;
+  musclePins[1] = A7;
 }
