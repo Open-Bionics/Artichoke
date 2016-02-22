@@ -20,6 +20,7 @@
 void demoMode(void);
 void fingerRoll(int del, int dir);
 void printGrip(int grip, int dir);
+bool checkSerial(void);
 
 extern int demoFlag;
 

@@ -28,14 +28,20 @@ void demoMode(void)
 	
 	printGrip(FIST_GRIP,OPEN);
 	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+ if(checkSerial())
+ return;
 	delay(gripDuration);
 	
 	printGrip(FIST_GRIP,CLOSE);
 	gripMovement(FIST_GRIP,BLANK,CLOSE,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 	
 	printGrip(FIST_GRIP,OPEN);
 	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 	
 	printGrip(FINGER_ROLL,CLOSE);
@@ -46,6 +52,8 @@ void demoMode(void)
 	
 	printGrip(FINGER_ROLL,CLOSE);
 	fingerRoll(300,CLOSE);
+  if(checkSerial())
+  return;
 	delay(gripDuration/2);
 	
 	printGrip(FINGER_ROLL,OPEN);
@@ -53,39 +61,55 @@ void demoMode(void)
 	
 	printGrip(FINGER_ROLL,CLOSE);
 	fingerRoll(300,CLOSE);
+  if(checkSerial())
+  return;
 	delay(gripDuration/4);
 	
 	printGrip(FIST_GRIP,OPEN);
 	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 
 	for(int i=0;i<NUM_GRIPS;i++)
 	{
 		printGrip(i,CLOSE);
 		gripMovement(i,BLANK,CLOSE,BLANK);
+    if(checkSerial())
+    return;
 		delay(gripDuration);
 		
 		printGrip(i,OPEN);
 		gripMovement(i,BLANK,OPEN,BLANK);
+    if(checkSerial())
+    return;
 		delay(gripDuration);
 	}
 	
 	#ifdef TRIPOD_GRIP
 	printGrip(TRIPOD_GRIP,CLOSE);
 	gripMovement(TRIPOD_GRIP,BLANK,CLOSE,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 	
 	printGrip(TRIPOD_GRIP,OPEN);
 	gripMovement(TRIPOD_GRIP,BLANK,OPEN,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 	#endif
 	
 	printGrip(PINCH_GRIP,CLOSE);
 	gripMovement(PINCH_GRIP,BLANK,CLOSE,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 	
 	printGrip(FIST_GRIP,OPEN);
 	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+  if(checkSerial())
+  return;
 	delay(gripDuration);
 	
 	printGrip(FINGER_ROLL,CLOSE);
@@ -94,6 +118,8 @@ void demoMode(void)
 	
 	printGrip(FIST_GRIP,OPEN);
 	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+  if(checkSerial())
+  return;
 	
 	if(!advancedSettings.demoFlag)
 		demoFlag = 0;
@@ -105,7 +131,6 @@ void demoMode(void)
 	{
 		MYSERIAL.println("\nStart up demo mode ON");
 		MYSERIAL.println("Enter A0 to disable this mode");
-		MYSERIAL.println("The hand is only responsive to serial commands \nat the end of each demo cycle");
 	}
 }
 
@@ -116,6 +141,8 @@ void fingerRoll(int del, int dir)
 		for(int i=NUM_FINGERS-1;i>=0;i--)
 		{
 			fingerControl(i,100,0,MAX_FINGER_SPEED);
+      if(checkSerial())
+      return;
 			delay(del);
 		}
 	}
@@ -124,9 +151,24 @@ void fingerRoll(int del, int dir)
 		for(int i=0;i<NUM_FINGERS;i++)
 		{
 			fingerControl(i,0,0,MAX_FINGER_SPEED);
+      if(checkSerial())
+      return;
 			delay(700);
 		}
 	}
+}
+
+bool checkSerial(void)
+{
+  if(MYSERIAL.available())
+  {
+    demoFlag = 0;
+    return 1;
+  }
+  else
+  {
+    return 0;
+  }
 }
 
 void printGrip(int grip, int dir)
