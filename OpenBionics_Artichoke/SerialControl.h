@@ -7,6 +7,7 @@
 *
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	SerialControl.h
 *
@@ -40,6 +41,9 @@ void clearAll(void);				//clear all input variables for the next string
 void initialEEPROMconfig(void);		// write default values to EEPROM
 void startUpMessages(void);
 void printInstructions(void);
+
+void researchMode_CSV_RX(char *CSVString);			// receive CSV string and write target positions to motors
+void researchMode_CSV_TX(void);			// receive CSV string and write target positions to motors
 
 
 // SERIAL CONTROL

@@ -7,6 +7,7 @@
 *
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	Demo.h
 *

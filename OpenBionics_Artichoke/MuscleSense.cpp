@@ -7,6 +7,7 @@
 *	
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	MuscleSense.cpp
 *
@@ -106,7 +107,7 @@ int readMuscleSensor(int muscleNum)
 {
 	int readVal;
 	
-	// read muscle value over I2C
+	// read muscle value over I2C	(requires I2C_ADC.h from https://github.com/Open-Bionics/Arduino_Libraries)
 	#ifdef USE_I2C_ADC
 	readVal = ADC2.read(muscleNum);
 	#else
@@ -302,21 +303,22 @@ void printADCValues(int* signal, bool* activation, int dir)
 	MYSERIAL.println(textString.open_close[dir]);
 }
 
+// print CSV of EMG and threshold data
 void muscleGraph(void)
 {
 	if(!advancedSettings.muscleCtrlFlag)		// if muscle mode is disabled
-	{
+	{											// generate muscle readings anyway
 		readMuscle(0);
 		readMuscle(1);
 	}
 	
 	MYSERIAL.print(readingsBuff[0][NUM_MUSC_SAMP-1]);
-	MYSERIAL.print(" ");
+	MYSERIAL.print(",");
 	MYSERIAL.print(thresh[0]);
-	MYSERIAL.print(" ");
+	MYSERIAL.print(",");
 	MYSERIAL.print(readingsBuff[1][NUM_MUSC_SAMP-1]);
-	MYSERIAL.print(" ");
+	MYSERIAL.print(",");
 	MYSERIAL.print(thresh[1]);
-	MYSERIAL.print(" ");
-	MYSERIAL.print('\r');
+	MYSERIAL.print(",");
+	MYSERIAL.print("\n");
 }

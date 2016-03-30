@@ -7,6 +7,7 @@
 *	
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	SerialControl.cpp
 *
@@ -17,6 +18,7 @@
 #include <FingerLib.h>			// for MYSERIAL
 #include "Globals.h"
 
+#include "Animation.h"
 #include "SerialControl.h"
 #include "Utils.h"
 #include "PinManagement.h"
@@ -24,8 +26,11 @@
 #include "Demo.h"
 #include "MotorControl.h"
 
-struct serialCmdType serialCmd;
+#ifdef HANDLE_EN
+#include "HANDle.h"
+#endif
 
+struct serialCmdType serialCmd;
 
 void serialEvent()
 {
@@ -135,7 +140,7 @@ void constrainReceivedValues(void)
 		serialCmd.stopPos = constrain(serialCmd.stopPos, 0,100);
 
 	if(serialCmd.advancedFlag != BLANK)
-		serialCmd.advancedFlag = constrain(serialCmd.advancedFlag, 0,5);
+		serialCmd.advancedFlag = constrain(serialCmd.advancedFlag, 0,15);
 
 	if(serialCmd.muscleCtrlFlag != BLANK)
 		serialCmd.muscleCtrlFlag = constrain(serialCmd.muscleCtrlFlag, 0,5);
@@ -187,6 +192,8 @@ void manageSerialSettings(void)
 			MYSERIAL.println(serialCmd.speed);
 		else
 			MYSERIAL.println(finger[serialCmd.fingerNum].readTargetSpeed());
+
+		fingerControl(serialCmd.fingerNum, serialCmd.stopPos, serialCmd.direction, serialCmd.speed);
 	}
 	else if(serialCmd.gripNum != BLANK)
 	{
@@ -215,6 +222,8 @@ void manageSerialSettings(void)
 		}
 			
 		MYSERIAL.print("\n");
+
+		gripMovement(serialCmd.gripNum, serialCmd.stopPos, serialCmd.direction, serialCmd.speed);
 	}
   
 	else if(serialCmd.instructionsFlag != BLANK)
@@ -259,6 +268,22 @@ void manageSerialSettings(void)
 				stopMotors();
 				MYSERIAL.println("Stop Motors");
 				break;
+			case 10:
+				advancedSettings.researchFlag = !advancedSettings.researchFlag;
+				MYSERIAL.print("Research mode 1 toggled ");
+				MYSERIAL.println(textString.off_on[advancedSettings.researchFlag]);
+				break;
+#ifdef HANDLE_EN
+			case 11:
+				advancedSettings.HANDle_en = !advancedSettings.HANDle_en;
+				MYSERIAL.print("HANDle mode ");
+				MYSERIAL.println(textString.disabled_enabled[advancedSettings.HANDle_en]);
+				EEPROM_writeStruct(ADVANCED_CTRL_LOC, advancedSettings);
+				break;
+			case 12:
+				toggleHANDleSerial();
+				break;
+#endif
 			default:
 				break;
 		}
@@ -294,21 +319,8 @@ void manageSerialSettings(void)
 					MYSERIAL.println(textString.off_on[printADCvals]);     // print ON/OFF
 				}
 				break;
-			case 4:             // enable/disable grip change
-				if(advancedSettings.muscleCtrlFlag != 0)
-				{
-					advancedSettings.gripFlag = !advancedSettings.gripFlag;
-					MYSERIAL.print("Grip Change Mode ");
-					MYSERIAL.println(textString.disabled_enabled[advancedSettings.gripFlag]);     // print Disabled/Enabled
-				}
-				break;
 			default:
 				break;
-		}
-		if(serialCmd.muscleCtrlFlag != 4)
-		{
-			MYSERIAL.print("Grip Change Mode ");
-			MYSERIAL.println(textString.off_on[advancedSettings.gripFlag]);
 		}
       
 		EEPROM_writeStruct(ADVANCED_CTRL_LOC,advancedSettings);   // store muscle mode in EEPROM
@@ -359,6 +371,8 @@ void manageSerialSettings(void)
 		MYSERIAL.print("Grip change hold duration ");
 		MYSERIAL.println(userSettings.holdTime);
 	}
+
+	clearAll();									// clear all serial commands (clear serialCmd.buffs)
 }
 
 void setDefaults(void)
@@ -421,6 +435,30 @@ void initialEEPROMconfig(void)			// write default values to EEPROM
 	EEPROM_writeStruct(USER_SETTINGS_LOC,userSettings);
 	
 	MYSERIAL.println("Complete");
+}
+
+
+void researchMode_CSV_RX(char *CSVString)			// receive CSV string and write target positions to motors
+{
+	int posVals[NUM_FINGERS];
+
+	convertFromCSV(CSVString, posVals);		// convert CSV string to CSV individual position values
+
+	for (int i = 0; i<NUM_FINGERS; i++)
+	{
+		finger[i].writePos(posVals[i]);
+	}
+}
+
+void researchMode_CSV_TX(void)			// receive CSV string and write target positions to motors
+{
+	for (int i = 0; i<NUM_FINGERS; i++)
+	{
+		MYSERIAL.print(finger[i].readPos());			// send CSV variable
+		if (i < NUM_FINGERS - 1)
+			MYSERIAL.print(",");						// send comma between variables, don't put send one at the end
+	}
+	MYSERIAL.print("\n");
 }
 
 void startUpMessages(void)
@@ -509,13 +547,19 @@ void printInstructions(void)
 	MYSERIAL.println("T###        Change 'muscle hold' grip change duration");
 	MYSERIAL.println("N           Calculate noise floor");
 	MYSERIAL.print("\n");
-	MYSERIAL.println("Advanced Settings (A#, ?)");
+	MYSERIAL.println("Advanced Settings (H#, A#, ?)");
 	MYSERIAL.println("Command     Description");
+	MYSERIAL.println("H           View hand configuration (LEFT or RIGHT)");
+	MYSERIAL.println("H1          Set hand to be RIGHT");
+	MYSERIAL.println("H2          Set hand to be LEFT");
 	MYSERIAL.println("A0          Toggle 'Demo Mode' ON/OFF");
 	MYSERIAL.println("A1          Toggle 'Serial Commands Instructions' ON/OFF");
 	MYSERIAL.println("A2          Toggle 'Muscle Graph mode' ON/OFF");
 	MYSERIAL.println("A3          Enable/Disable motors");
 	MYSERIAL.println("A5          Emergency stop motors");
+	MYSERIAL.println("A10         Research Mode 0, fast position control");
+	MYSERIAL.println("A11         Research Mode 1, HANDle control (Nunchuck)");
+	MYSERIAL.println("A12         Research Mode 1, HANDle  data dump");
 	MYSERIAL.println("?           Display serial commands list");
 	MYSERIAL.print("\n\n\n");
 	MYSERIAL.println("Examples");
@@ -526,5 +570,28 @@ void printInstructions(void)
 	MYSERIAL.println("F4 P50      Pinky to position 50");
 	MYSERIAL.println("F1 P50 S80  Index finger to position 50 at speed 80");
 	MYSERIAL.println("F0 O S200   Thumb Open at speed 200");
+	MYSERIAL.print("\n\n");
+
+
+
+
+	// MODE ESCAPE TEXT
+	if(!advancedSettings.motorEnable)			// enable motors
+		MYSERIAL.println("Motors disabled, enter 'A3' to re-enable them");
+	if (advancedSettings.muscleGraphFlag)		// print muscle data over serial
+		MYSERIAL.println("Muscle graph mode, enter 'A2' to disable this mode");
+	if (advancedSettings.muscleCtrlFlag > 0)	// muscle/EMG control
+		MYSERIAL.println("EMG/muscle control mode, enter 'M0' to disable this mode");
+	if (demoFlag)								// demo mode
+		MYSERIAL.println("Demo mode, enter 'A0' to disable this mode");
+	// if researchFlag == 1, and no other command is recognised, use CSV string as target motor positions
+	if (advancedSettings.researchFlag == 1)		// if 'A10'
+		MYSERIAL.println("Research mode 0, enter 'A10' to disable this mode");
+
+#ifdef HANDLE_EN			
+	if (advancedSettings.HANDle_en)				// HANDle (Nunchuck) control
+		MYSERIAL.println("HANDle mode, enter 'A11' to disable this mode");
+#endif
+	
 	MYSERIAL.print("\n\n");
 }

@@ -7,6 +7,7 @@
 *	
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	PinManagement.cpp
 *
@@ -22,7 +23,17 @@
 
 void IOconfig(void)   // assign pins for each finger, store pins within list and set as INPUT/OUTPUT
 {
+	// assign/attach finger and muscle pins
 	pinAssignment();
+
+	// enable/disable motors
+	for (int i = 0; i<NUM_FINGERS; i++)
+	{
+		if (advancedSettings.motorEnable)
+			finger[i].enableMotor();
+		else
+			finger[i].disableMotor();
+	}
 
 	#ifdef USE_I2C_ADC
 		// if using I2C over the headphone port, pull the SCL and SDA high using A6 & A7, as they are connected via 10k pullups

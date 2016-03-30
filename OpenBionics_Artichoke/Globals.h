@@ -7,6 +7,7 @@
 *	
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	Globals.h
 *
@@ -23,8 +24,9 @@
 #error "This software only supports boards with an Atmega2560 processor."
 #endif
 
-// Uncomment any of the following to enable I2C_ADC muscle control
-//#define USE_I2C_ADC             // I2C muscle sensors
+// Uncomment any of the following to enable various features
+//#define USE_I2C_ADC			// I2C muscle sensors (requires I2C_ADC.h from https://github.com/Open-Bionics/Arduino_Libraries)
+#define HANDLE_EN				// HANDle (Nunchuck) control
 
 // MACROS
 #define IS_BETWEEN(x,a,b)     (((x>=a)&&(x<=b))?(1):(0))        // check if value x is between values a and b
@@ -73,21 +75,24 @@
 extern Finger finger[NUM_FINGERS];
 // FINGER & HAND STATES
 extern int currentGrip;				// current grip pattern for muscle sense change
-extern int currentDir;
+extern int currentDir;				// current direction of the hand (Open/Closed)
 
 // ADVANCED SETTINGS
-struct advancedSettingsType
+struct advancedSettingsType					// these settings are stored in EEPROM and are used to enter different modes at startup
 {
 	// one time config flags
-	uint8_t initConfigFlag = false;
-	uint8_t handFlag = BLANK;
-	// control flags
-	uint8_t instructionsFlag = BLANK;
-	uint8_t muscleGraphFlag = BLANK;
-	uint8_t muscleCtrlFlag = BLANK;
-	uint8_t gripFlag = BLANK;
-	uint8_t demoFlag = BLANK;
-	uint8_t motorEnable = BLANK;
+	uint8_t initConfigFlag = false;			// used to indicate whether EEPROM has been configured correctly
+	uint8_t handFlag = BLANK;				// left or right hand
+											// control flags		
+	uint8_t instructionsFlag = BLANK;		// display serial instructions on start up
+	uint8_t muscleGraphFlag = BLANK;		// display muscle graph on startup
+	uint8_t muscleCtrlFlag = BLANK;			// enable muscle control (standard or position) on startup
+	uint8_t gripFlag = BLANK;				// enable/disable grip change 
+	uint8_t demoFlag = BLANK;				// run demo mode on startup
+	uint8_t motorEnable = BLANK;			// enable/disable motors
+
+	uint8_t HANDle_en = BLANK;				// enable HANDle mode from startup
+	uint8_t researchFlag = BLANK;			// change hand control inputs
 };
 extern struct advancedSettingsType advancedSettings;
 
@@ -114,7 +119,7 @@ extern struct textStringType textString;
 
 
 // SOFTWARE VERSION NUMBER
-#define VERSION_N  1.0
-#define OB_BOARD   3
+#define VERSION_N  1.1
+#define OB_BOARD   3			// ALMOND_BOARD
 
 #endif /*_GLOBALS_h*/

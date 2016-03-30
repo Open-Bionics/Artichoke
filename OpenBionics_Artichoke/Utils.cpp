@@ -7,6 +7,7 @@
 *
 *	Website - http://www.openbionics.com/
 *	GitHub - https://github.com/Open-Bionics
+*	Email - ollymcbride@openbionics.com
 *
 *	Utils.h
 *
@@ -185,4 +186,23 @@ void overwriteArray(int* inArray, int arraySize, int val)		// overwrite array wi
 long map(long x, long in_min, long in_max, long out_min, long out_max)
 {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+
+// CSV
+
+// converts a CSV line from string to individual values within int array, returns number of variables
+int convertFromCSV(char *inString, int *valArray)
+{
+	const char* CSV_seperator = ",";
+	char *tmpVal, *tmpLoc;
+	int tokenIndex = 0;
+	tmpVal = strtok_r(inString, CSV_seperator, &tmpLoc);     // get pointer of first token
+	while (tmpVal)
+	{
+		valArray[tokenIndex++] = atoi(tmpVal);
+
+		tmpVal = strtok_r(NULL, CSV_seperator, &tmpLoc);      // continue searching through string
+	}
+	return tokenIndex;
 }
