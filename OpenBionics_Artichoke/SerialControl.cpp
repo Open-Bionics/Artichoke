@@ -372,6 +372,12 @@ void manageSerialSettings(void)
 		MYSERIAL.println(userSettings.holdTime);
 	}
 
+// if research mode == 1, and no other command is recognised, use CSV string as target motor positions 
+	else if(advancedSettings.researchFlag == 1)   // if 'A10'
+	{
+		researchMode_CSV_RX(serialCmd.cmdBuff);
+	}
+
 	clearAll();									// clear all serial commands (clear serialCmd.buffs)
 }
 
