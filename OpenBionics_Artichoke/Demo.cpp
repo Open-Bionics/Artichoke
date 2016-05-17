@@ -19,34 +19,51 @@
 #include "Demo.h"
 #include "Animation.h"
 #include "MotorControl.h"
+#include "TimerManagement.h"
 
 int demoFlag = 0;
-int gripDuration = 800;    // amount of time each grip runs in demo mode (milliseconds)
+int gripDuration = 1000;    // amount of time each grip runs in demo mode (milliseconds)
+int gripSpeed = 230;
 
 void demoMode(void)
 {
 	MYSERIAL.println("Demo starting");
 	
 	printGrip(FIST_GRIP,OPEN);
-	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+	gripMovement(FIST_GRIP,BLANK,OPEN, gripSpeed);
  if(checkSerial())
  return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	
 	printGrip(FIST_GRIP,CLOSE);
-	gripMovement(FIST_GRIP,BLANK,CLOSE,BLANK);
+	gripMovement(FIST_GRIP,BLANK,CLOSE, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	
 	printGrip(FIST_GRIP,OPEN);
-	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+	gripMovement(FIST_GRIP,BLANK,OPEN, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	
 	printGrip(FINGER_ROLL,CLOSE);
 	fingerRoll(300,CLOSE);
+	if (checkSerial())
+		return;
+	customDelay(gripDuration / 4);
+	
+	printGrip(FINGER_ROLL,OPEN);
+	fingerRoll(300,OPEN);
+	if (checkSerial())
+		return;
+	customDelay(gripDuration / 2);
+	
+	printGrip(FINGER_ROLL,CLOSE);
+	fingerRoll(300,CLOSE);
+  if(checkSerial())
+  return;
+	customDelay(gripDuration/2);
 	
 	printGrip(FINGER_ROLL,OPEN);
 	fingerRoll(300,OPEN);
@@ -55,70 +72,61 @@ void demoMode(void)
 	fingerRoll(300,CLOSE);
   if(checkSerial())
   return;
-	delay(gripDuration/2);
-	
-	printGrip(FINGER_ROLL,OPEN);
-	fingerRoll(300,OPEN);
-	
-	printGrip(FINGER_ROLL,CLOSE);
-	fingerRoll(300,CLOSE);
-  if(checkSerial())
-  return;
-	delay(gripDuration/4);
+	customDelay(gripDuration/4);
 	
 	printGrip(FIST_GRIP,OPEN);
-	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+	gripMovement(FIST_GRIP,BLANK,OPEN, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 
 	for(int i=0;i<NUM_GRIPS;i++)
 	{
 		printGrip(i,CLOSE);
-		gripMovement(i,BLANK,CLOSE,BLANK);
+		gripMovement(i,BLANK,CLOSE, gripSpeed);
     if(checkSerial())
     return;
-		delay(gripDuration);
+		customDelay(gripDuration);
 		
 		printGrip(i,OPEN);
-		gripMovement(i,BLANK,OPEN,BLANK);
+		gripMovement(i,BLANK,OPEN, gripSpeed);
     if(checkSerial())
     return;
-		delay(gripDuration);
+		customDelay(gripDuration);
 	}
 	
 	#ifdef TRIPOD_GRIP
 	printGrip(TRIPOD_GRIP,CLOSE);
-	gripMovement(TRIPOD_GRIP,BLANK,CLOSE,BLANK);
+	gripMovement(TRIPOD_GRIP,BLANK,CLOSE, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	
 	printGrip(TRIPOD_GRIP,OPEN);
-	gripMovement(TRIPOD_GRIP,BLANK,OPEN,BLANK);
+	gripMovement(TRIPOD_GRIP,BLANK,OPEN, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	#endif
 	
 	printGrip(PINCH_GRIP,CLOSE);
-	gripMovement(PINCH_GRIP,BLANK,CLOSE,BLANK);
+	gripMovement(PINCH_GRIP,BLANK,CLOSE, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	
 	printGrip(FIST_GRIP,OPEN);
-	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+	gripMovement(FIST_GRIP,BLANK,OPEN, gripSpeed);
   if(checkSerial())
   return;
-	delay(gripDuration);
+	customDelay(gripDuration);
 	
 	printGrip(FINGER_ROLL,CLOSE);
 	fingerRoll(430,CLOSE);
-	delay(gripDuration/2);
+	customDelay(gripDuration/2);
 	
 	printGrip(FIST_GRIP,OPEN);
-	gripMovement(FIST_GRIP,BLANK,OPEN,BLANK);
+	gripMovement(FIST_GRIP,BLANK,OPEN, gripSpeed);
   if(checkSerial())
   return;
 	
@@ -141,20 +149,20 @@ void fingerRoll(int del, int dir)
 	{
 		for(int i=NUM_FINGERS-1;i>=0;i--)
 		{
-			fingerControl(i,100,0,MAX_FINGER_SPEED);
+			fingerControl(i,100,0, gripSpeed);
       if(checkSerial())
-      return;
-			delay(del);
+		return;
+			customDelay(del);
 		}
 	}
 	else
 	{
 		for(int i=0;i<NUM_FINGERS;i++)
 		{
-			fingerControl(i,0,0,MAX_FINGER_SPEED);
+			fingerControl(i,0,0, gripSpeed);
       if(checkSerial())
-      return;
-			delay(700);
+		return;
+			customDelay(del);
 		}
 	}
 }

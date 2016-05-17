@@ -19,5 +19,6 @@
 void timerSetup(void);
 void milliSecInterrupt(void);
 double customSeconds(void);
+bool customDelay(double delVal);
 
 #endif /*_TIMER_MANAGEMENT_H_*/

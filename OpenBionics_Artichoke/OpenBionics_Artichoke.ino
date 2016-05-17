@@ -42,6 +42,7 @@
 *	V1.0.0	|	08/01/16	|	Initial release for Ada hand and Almond boards using Atmega 2560
 *	V1.0.1	|	03/02/16	|	Modified formatting and cleaned up
 *	V1.1.0	|	31/03/16	|	Added research and HANDle mode. Fixed motorEn and muscle graph
+*	V1.1.1	|	17/05/16	|	Increased PWM timer freq to prevent hum and implemented customDelay() instead of delay()		
 *
 *
 *	Artichoke Description
@@ -74,7 +75,6 @@ void setup()
 
 void loop()
 {
-
 	if (advancedSettings.muscleGraphFlag)		// print muscle data over serial
 		muscleGraph();
 	if (advancedSettings.muscleCtrlFlag > 0)	// muscle/EMG control

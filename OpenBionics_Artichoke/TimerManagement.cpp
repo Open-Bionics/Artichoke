@@ -15,7 +15,7 @@
 
 #include <Arduino.h>			// for type definitions
 #include <FingerLib.h>			// for MYSERIAL	
-#include "TimerManagement.h"
+#include "TimerManagement.h"	// for customDelay()
 
 
 static uint32_t _secondCount = 0;
@@ -64,9 +64,21 @@ void milliSecInterrupt(void)
 // 	#endif
 }
 
+// The timer frequencies have been changed, which 'breaks' delay() and millis()
 double customSeconds(void)
 {
 	return _secondCount;
+}
+
+bool customDelay(double delVal)
+{
+	static double _prevTime = 0;
+
+	_prevTime = customMillis();
+
+	while ((customMillis() - _prevTime) <= delVal);
+
+	return true;	
 }
 
 

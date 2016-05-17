@@ -26,7 +26,7 @@
 
 // Uncomment any of the following to enable various features
 //#define USE_I2C_ADC			// I2C muscle sensors (requires I2C_ADC.h from https://github.com/Open-Bionics/Arduino_Libraries)
-//#define HANDLE_EN				// HANDle (Nunchuck) control
+#define HANDLE_EN				// HANDle (Nunchuck) control
 
 // MACROS
 #define IS_BETWEEN(x,a,b)     (((x>=a)&&(x<=b))?(1):(0))        // check if value x is between values a and b

@@ -21,6 +21,7 @@
 #include "Wiichuck/Wiichuck.h"				// Nunchuck library, written by jnw.walker@gmail.com
 #include "HANDle.h"
 #include "Animation.h"
+#include "TimerManagement.h"
 
 #define MID_TOLERANCE 0.04					// position tolerance from center
 
@@ -42,7 +43,7 @@ void HANDleMain(void)
 
 		MYSERIAL.println("Calibrating mid position of joystick");
 		wii.poll();
-		delay(100);
+		customDelay(100);
 		wii.poll();
 		wii.calibrate();  // calibration (needs a poll before hand to work)
 		MYSERIAL.println("Complete");
@@ -55,7 +56,7 @@ void HANDleMain(void)
 	{
 		MYSERIAL.println("Calibrating mid position of joystick");
 		wii.poll();
-		delay(100);
+		customDelay(100);
 		wii.poll();
 		wii.calibrate();  // calibration (needs a poll before hand to work)
 	}
@@ -71,7 +72,7 @@ void HANDleMain(void)
 		MYSERIAL.print("  ");
 		MYSERIAL.println(textString.grips[currentGrip]);
 		
-		delay(200);
+		customDelay(200);
 	}
 	if(wii.buttonZ())
 	{
@@ -84,7 +85,7 @@ void HANDleMain(void)
 			MYSERIAL.print("  ");
 			MYSERIAL.println(textString.grips[currentGrip]);
 		
-		delay(200);
+		customDelay(200);
 	}	
 	
 	yPos = wii.joyY();
@@ -124,7 +125,7 @@ void HANDleMain(void)
 	}
 	else
 	{
-		delay(10);		// delay to counteract time spent printing to serial (required as Nunchuck IC is slow)
+		customDelay(10);		// delay to counteract time spent printing to serial (required as Nunchuck IC is slow)
 	}
 
 }

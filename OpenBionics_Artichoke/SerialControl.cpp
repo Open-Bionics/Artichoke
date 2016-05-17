@@ -25,6 +25,7 @@
 #include "MuscleSense.h"
 #include "Demo.h"
 #include "MotorControl.h"
+#include "TimerManagement.h"
 
 #ifdef HANDLE_EN
 #include "HANDle.h"
@@ -70,7 +71,7 @@ void getCmd(void)
 	// while there's data in the Serial buffer
 	while(MYSERIAL.available() > 0)
 	{
-		delay(1);							// allow time for buffer to free up
+		customDelay(1);							// allow time for buffer to free up
 		serialChar = MYSERIAL.read();
 		serialCmd.cmdBuff[buffCount++] = serialChar;
 	}
@@ -372,8 +373,8 @@ void manageSerialSettings(void)
 		MYSERIAL.println(userSettings.holdTime);
 	}
 
-// if research mode == 1, and no other command is recognised, use CSV string as target motor positions 
-	else if(advancedSettings.researchFlag == 1)   // if 'A10'
+	// if research mode == 1, and no other command is recognised, use CSV string as target motor positions 
+	else if (advancedSettings.researchFlag == 1)		// if 'A10'
 	{
 		researchMode_CSV_RX(serialCmd.cmdBuff);
 	}
