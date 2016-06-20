@@ -432,7 +432,7 @@ void initialEEPROMconfig(void)			// write default values to EEPROM
 	advancedSettings.muscleGraphFlag = OFF;
 	advancedSettings.gripFlag = ON;
 	advancedSettings.demoFlag = ON;
-  advancedSettins.HANDle_en = OFF;
+  advancedSettings.HANDle_en = OFF;
 	advancedSettings.motorEnable = EN;
 	advancedSettings.initConfigFlag = true;  // set flag to signal config complete
   
