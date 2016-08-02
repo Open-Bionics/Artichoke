@@ -38,30 +38,6 @@ void milliSecInterrupt(void)
 		sCounter = 0;
 		_secondCount ++;
 	}
-	
-	#ifdef ARDUINO_AVR_MEGA2560
-	// 	static bool toggle = false;
-	//
-	//	// PA3 = DIO 5
-	// 	if(toggle)
-	// 	PORTA |= (1 << 3);
-	// 	else
-	// 	PORTA &= ~(1<<3);
-	//
-	// 	toggle = !toggle;
-	#endif
-	
-	
-	
-// 	// latches a pin for a set duration
-// 	if(latchIndex>=0)
-// 		latchCounter();
-// 
-// 	// vibrates a haptic motor for a duration/pattern
-// 	#ifdef USE_HAPTIC
-// 	if(portExpander.runVibFlag!= -1)
-// 		runVibration();
-// 	#endif
 }
 
 // The timer frequencies have been changed, which 'breaks' delay() and millis()
@@ -69,6 +45,7 @@ double customSeconds(void)
 {
 	return _secondCount;
 }
+
 
 bool customDelay(double delVal)
 {
@@ -78,37 +55,5 @@ bool customDelay(double delVal)
 
 	while ((customMillis() - _prevTime) <= delVal);
 
-	return true;	
+	return true;
 }
-
-
-
-/*uint8_t ellapsedTime(uint16_t inTime, uint8_t index)
-{
-  static uint8_t start = 0;
-  static uint16_t ellapsedCount = 0;
-  static uint16_t ellapsedTarget = 0;
-
-  static int startTime[255];
-
-  if(!start)
-  {
-    start = 1;
-    startTime[index] = customMillis();
-  }
-
-  if((customMillis() - startTime[index]) >= inTime)
-  {
-    start = 0;
-    return 1;
-  }
-  else
-  {
-    return 0;
-  }
-}
-
-uint8_t ellapsedTime(uint16_t inTime)
-{
-  return (ellapsedTime(inTime,0));
-} */

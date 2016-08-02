@@ -20,6 +20,10 @@
 #include "PinManagement.h"
 #include "MuscleSense.h"
 
+#ifdef USE_I2C_ADC
+#include <I2C_ADC.h>			// This library can be downloaded from https://github.com/Open-Bionics
+#endif
+
 
 void IOconfig(void)   // assign pins for each finger, store pins within list and set as INPUT/OUTPUT
 {

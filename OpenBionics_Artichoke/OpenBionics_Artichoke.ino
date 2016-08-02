@@ -28,10 +28,16 @@
 #include "TimerManagement.h"
 #include "Utils.h"
 
+#ifdef USE_I2C_ADC
+#include <I2C_ADC.h>			// This library can be downloaded from https://github.com/Open-Bionics
+#endif
+
 #ifdef HANDLE_EN
 #include "HANDle.h"
 #include "Wiichuck\Wiichuck.h"				// Nunchuck library, written by jnw.walker@gmail.com
 #endif
+
+
 
 
 /***************************************************************************************************

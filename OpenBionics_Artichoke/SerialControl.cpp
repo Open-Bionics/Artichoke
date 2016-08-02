@@ -39,6 +39,9 @@ void serialEvent()
 	if(serialCmd.cmdsToGet)
 	{
 		serialCmd.cmdsToGet--;
+
+		//Serial3.println(serialCmd.cmdBuff);
+
 		processCommand();
 		manageSerialSettings();         // toggle demo & muscle mode on/off
 	}
@@ -68,22 +71,24 @@ void getCmd(void)
 	char serialChar;
 	int buffCount = 0;
 
-	// while there's data in the Serial buffer
-	while(MYSERIAL.available() > 0)
+	if (MYSERIAL.available())
 	{
-		customDelay(1);							// allow time for buffer to free up
-		serialChar = MYSERIAL.read();
-		serialCmd.cmdBuff[buffCount++] = serialChar;
-	}
-	
-	// once the serial buffer is clear, set flag to indicate a received command to process and print the received command
-	if(buffCount > 0)
-	{
-		serialCmd.cmdBuff[buffCount] = 0;	//terminate string
-		MYSERIAL.print("\n");
-		MYSERIAL.println(serialCmd.cmdBuff);
-		serialCmd.cmdsToGet++;
-		buffCount = 0;					//clear buffer
+		while (1)
+		{
+			serialChar = MYSERIAL.read();
+			serialCmd.cmdBuff[buffCount++] = serialChar;
+			delayMicroseconds(255);
+
+			// if new line (/n or /l) or carriage return, end of string
+			if (((uint8_t)serialChar == (uint8_t)13) || ((uint8_t)serialChar == (uint8_t)10))
+			{
+				serialCmd.cmdBuff[buffCount] = 0;  //terminate string
+				serialCmd.cmdsToGet++;
+				buffCount = 0;          //clear buffer
+
+				break;
+			}
+		}
 	}
 }
 
@@ -196,6 +201,8 @@ void manageSerialSettings(void)
 
 		fingerControl(serialCmd.fingerNum, serialCmd.stopPos, serialCmd.direction, serialCmd.speed);
 	}
+
+	
 	else if(serialCmd.gripNum != BLANK)
 	{
 		MYSERIAL.print("Grip ");
@@ -372,7 +379,7 @@ void manageSerialSettings(void)
 		MYSERIAL.print("Grip change hold duration ");
 		MYSERIAL.println(userSettings.holdTime);
 	}
-
+	
 	// if research mode == 1, and no other command is recognised, use CSV string as target motor positions 
 	else if (advancedSettings.researchFlag == 1)		// if 'A10'
 	{
@@ -432,8 +439,8 @@ void initialEEPROMconfig(void)			// write default values to EEPROM
 	advancedSettings.muscleGraphFlag = OFF;
 	advancedSettings.gripFlag = ON;
 	advancedSettings.demoFlag = ON;
-  advancedSettings.HANDle_en = OFF;
 	advancedSettings.motorEnable = EN;
+	advancedSettings.HANDle_en = OFF;
 	advancedSettings.initConfigFlag = true;  // set flag to signal config complete
   
 	userSettings.sensitivityOffset = 200;

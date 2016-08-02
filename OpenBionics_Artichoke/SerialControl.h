@@ -25,7 +25,7 @@
 #define ADVANCED_CTRL_LOC	  20	// starting pos for advanced control flags
 #define USER_SETTINGS_LOC	  30	// starting pos for stored user settings
 
-void serialEvent();
+void serialEvent(void);
 bool codeSeen(char code);
 float codeVal();
 float parsenumber(char code) ;

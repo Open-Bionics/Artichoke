@@ -20,6 +20,10 @@
 #include "MuscleSense.h"
 #include "Animation.h"
 
+#ifdef USE_I2C_ADC
+#include <I2C_ADC.h>			// This library can be downloaded from https://github.com/Open-Bionics
+#endif
+
 
 // BUFFERS
 static int readingsBuff[2][NUM_MUSC_SAMP];				// raw signal readings
