@@ -16,17 +16,24 @@
 #ifndef _GLOBALS_h
 #define _GLOBALS_h
 
-#include <Arduino.h>	// init data types (uint8_t...)
-#include <FingerLib.h>
+#include <Arduino.h>	// data types (uint8_t...)
+#include <FingerLib.h>	// finger control
 
-// Architecture specific include
+
+// Uncomment any of the following to enable various features
+#define NUM_EMG_CHANNELS	2	// select the number of EMG channels to use (1 or 2)
+//#define USE_I2C_ADC			// I2C muscle sensors (requires I2C_ADC.h from https://github.com/Open-Bionics/Arduino_Libraries)
+//#define HANDLE_EN				// HANDle (Nunchuck) control
+
+
+// ERROR MANAGEMENT
 #ifndef ARDUINO_AVR_MEGA2560
 #error "This software only supports boards with an Atmega2560 processor."
 #endif
 
-// Uncomment any of the following to enable various features
-//#define USE_I2C_ADC			// I2C muscle sensors (requires I2C_ADC.h from https://github.com/Open-Bionics/Arduino_Libraries)
-//#define HANDLE_EN			// HANDle (Nunchuck) control
+#if (NUM_EMG_CHANNELS < 1) || (NUM_EMG_CHANNELS > 2)
+#error "This software only supports a maximum of 2 EMG channels"
+#endif
 
 // MACROS
 #define IS_BETWEEN(x,a,b)     (((x>=a)&&(x<=b))?(1):(0))        // check if value x is between values a and b
@@ -35,6 +42,7 @@
 #define LED_WRIST	16
 #define LED_KNUCKLE	24
 #define LED_EDGE	9
+
 // DIRECTIONS
 #define RIGHT		1	    // handIs
 #define LEFT		2	    // handIs
@@ -47,14 +55,16 @@
 #define ON			1	    // EEPROM flag
 #define DISABLE		0	    // ADC channels
 #define EN			1	    // ADC channels
-#define BLANK		(-1)	// animation array
+#define BLANK		(-1)	
+
 // FINGERS
 #define NUM_FINGERS		5
-#define FINGER0			0		// thumb flex
-#define FINGER1			1		// index flex
-#define FINGER2			2		// middle flex
-#define FINGER3			3		// ring flex
-#define FINGER4			4		// pinky flex
+#define FINGER0			0		// thumb
+#define FINGER1			1		// index
+#define FINGER2			2		// middle
+#define FINGER3			3		// ring
+#define FINGER4			4		// pinky
+
 // GRIPS
 #define NUM_GRIPS		6
 #define FIST_GRIP		0
@@ -64,18 +74,21 @@
 #define PINCH_GRIP		4
 #define TRIPOD_GRIP		5
 #define FINGER_ROLL		6					// only used for Demo mode
+
 // EEPROM LOCATIONS
 #define ADVANCED_CTRL_LOC	  20			// starting pos for advanced control flags
 #define USER_SETTINGS_LOC	  30			// starting pos for stored user settings
+
 // DEFAULTS
 #define FULLY_OPEN		MIN_FINGER_POS		// fully open position for the hand, from FingerLib.h
 #define FULLY_CLOSED	MAX_FINGER_POS		// fully closed position for the hand, from FingerLib.h
 
 // FINGERLIB FINGER CLASS
-extern Finger finger[NUM_FINGERS];
+extern Finger finger[NUM_FINGERS];			// instances of the Finger class, from FingerLib.h
+
 // FINGER & HAND STATES
-extern int currentGrip;				// current grip pattern for muscle sense change
-extern int currentDir;				// current direction of the hand (Open/Closed)
+extern int currentGrip;						// current grip pattern for muscle sense change
+extern int currentDir;						// current direction of the hand (Open/Closed)
 
 // ADVANCED SETTINGS
 struct advancedSettingsType					// these settings are stored in EEPROM and are used to enter different modes at startup
@@ -97,10 +110,10 @@ struct advancedSettingsType					// these settings are stored in EEPROM and are u
 extern struct advancedSettingsType advancedSettings;
 
 // USER SETTINGS
-struct userSettingsType
+struct userSettingsType						// these settings are also stored in EEPROM, and are custom to each user
 {
-	int sensitivityOffset = BLANK;
-	int holdTime = BLANK;             // time the muscle needs to be held tensed to perform a grip change
+	int sensitivityOffset = BLANK;			// the sensitivity of the EMG controller
+	int holdTime = BLANK;					// time the muscle needs to be held tensed to perform a grip change
 };
 extern struct userSettingsType userSettings;
 
@@ -111,15 +124,35 @@ struct textStringType
 	const char* off_on[2] = {"OFF","ON"};								// states
 	const char* right_left[2] = {"Right","Left"};						// hand types
 	const char* disabled_enabled[2] = {"Disabled","Enabled"};			// motor states
-	const char* board[4] = {"Adult","Four Motor","Child","Almond"};     // board names
 	const char* grips[NUM_GRIPS+1] = {"Fist","Palm","Thumbs Up","Point","Pinch","Tripod","Finger Roll"};  // grip names
 	
 };
 extern struct textStringType textString;
 
 
+
+// STORES SERIAL STRINGS IN PROGMEM, SAVES 3KB RAM
+#define  FORCE_INLINE __attribute__((always_inline)) inline
+
+FORCE_INLINE void serialprintPGM(const char *str)
+{
+	char ch = pgm_read_byte(str);
+	while (ch)
+	{
+		MYSERIAL.write(ch);
+		ch = pgm_read_byte(++str);
+	}
+}
+
+#define MYSERIAL_PRINT(x) MYSERIAL.print(x);
+#define MYSERIAL_PRINT_F(x,y) MYSERIAL.print(x,y);
+#define MYSERIAL_PRINTLN(x) do {MYSERIAL.print(x);MYSERIAL.write('\n');} while(0)
+
+#define MYSERIAL_PRINT_PGM(x) serialprintPGM(PSTR(x));
+#define MYSERIAL_PRINTLN_PGM(x) do{serialprintPGM(PSTR(x));MYSERIAL.write('\n');} while(0)
+
+
 // SOFTWARE VERSION NUMBER
-#define VERSION_N  1.1
-#define OB_BOARD   3			// ALMOND_BOARD
+#define VERSION_N  1.2			// 11/08/16
 
 #endif /*_GLOBALS_h*/

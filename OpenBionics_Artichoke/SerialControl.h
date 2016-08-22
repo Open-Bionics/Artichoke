@@ -65,7 +65,6 @@ struct serialCmdType
 	int demoFlag = BLANK;
 	int sensitivityAdjust = BLANK;
 	int resetFlag = BLANK;
-	int noiseFloor = BLANK;
 	int holdTime = BLANK;
 	int battFlag = BLANK;
 	int storeData = BLANK;

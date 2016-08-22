@@ -20,7 +20,7 @@
 #if defined(HANDLE_EN)
 #include "Wiichuck/Wiichuck.h"				// Nunchuck library, written by jnw.walker@gmail.com
 #include "HANDle.h"
-#include "Animation.h"
+#include "GripControl.h"
 #include "TimerManagement.h"
 
 #define MID_TOLERANCE 0.04					// position tolerance from center
