@@ -9,7 +9,7 @@
 *	GitHub - https://github.com/Open-Bionics
 *	Email - ollymcbride@openbionics.com
 *
-*	GripControl.cpp
+*	Animation.cpp
 *
 */
 
@@ -17,12 +17,12 @@
 #include <FingerLib.h>			// for MYSERIAL
 #include "Globals.h"
 
-#include "GripControl.h"
-#include "GripPositions.h"
+#include "Animation.h"
+#include "AnimationPositions.h"
 
 /* 
  * Instead of using a lookup table, calculate the position of the finger by mapping the target input pos (inPos) to 
- * the values within the gripPos array. This also allows for the finger to remain at a set position for a period 
+ * the values within the animation array. This also allows for the finger to remain at a set position for a period 
  * of time and then continue the grip pattern. 
  * 
  * The function looks through the array of positions for the specific grip and maps inPos to the grip position 
@@ -77,10 +77,10 @@ void gripMovement(int gripNum, int inPos)
 
   inPos = constrain(inPos,0,100);
 
-  for(stepNum=0;stepNum<NUM_GRIP_STEPS;stepNum++)
+  for(stepNum=0;stepNum<NUM_ANIM_STEPS;stepNum++)
   {
-    currentCountVal = gripPos[gripNum][stepNum][GRIP_COUNT_LOC];
-    nextCountVal = gripPos[gripNum][stepNum+1][GRIP_COUNT_LOC];
+    currentCountVal = animation[gripNum][stepNum][ANIM_COUNT_LOC];
+    nextCountVal = animation[gripNum][stepNum+1][ANIM_COUNT_LOC];
 	
     if(IS_BETWEEN(inPos,currentCountVal,nextCountVal))
     {
@@ -88,20 +88,20 @@ void gripMovement(int gripNum, int inPos)
       {
         do
         {
-          posA = gripPos[gripNum][(stepNum-stepModA)][fingerNum+1];
+          posA = animation[gripNum][(stepNum-stepModA)][fingerNum+1];
           if(posA == -1) 
 			stepModA ++;
         } while(posA == -1);
 		
         do
         {
-          posB = gripPos[gripNum][(stepNum+1+stepModB)][fingerNum+1];
+          posB = animation[gripNum][(stepNum+1+stepModB)][fingerNum+1];
           if(posB == -1) 
 		  stepModB ++;
         } while(posB == -1);
 		
-        countA = gripPos[gripNum][(stepNum-stepModA)][GRIP_COUNT_LOC];
-        countB = gripPos[gripNum][(stepNum+1+stepModB)][GRIP_COUNT_LOC];
+        countA = animation[gripNum][(stepNum-stepModA)][ANIM_COUNT_LOC];
+        countB = animation[gripNum][(stepNum+1+stepModB)][ANIM_COUNT_LOC];
 
         finger[fingerNum].writePos(map(inPos,countA,countB,posA,posB));  
 

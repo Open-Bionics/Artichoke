@@ -53,8 +53,6 @@ void togglePin(uint8_t INPUT_STATE)
 	_togglePinState = !_togglePinState;
 }
 
-
-/*
 // ARRAY MANAGEMENT
 int arrayMean(int *inArray, int size)    //calculate mean of array
 {
@@ -117,6 +115,26 @@ int rollingMode(int *inArray, int size, int val)    //calculate rolling mode of 
 	return max;
 }
 
+/*float rollingPeakDetect(float *inArray, int size, int val)
+{
+  int i;
+  float max = 0;
+  float total = 0;
+  float mean = 0;
+  
+  for(i = 0; i < size-1; i++) 
+  {
+    inArray[i] = inArray[i+1];    // roll
+    total += inArray[i];          // mean
+    max = MAX(inArray[i],max);    // max
+  }
+  inArray[size-1] = val;
+  total += val;
+  mean = (float) total / (float) size;
+  max = MAX(val,max);    // max
+
+  return (max - mean);
+}*/
 
 void rollingBuff(int *inArray, int size, int val)   //calculate rolling mean of array
 {
@@ -127,7 +145,7 @@ void rollingBuff(int *inArray, int size, int val)   //calculate rolling mean of 
 
   }
   inArray[size-1] = val;
-}*/
+}
 
 void printArray(int* inArray, int arraySize)	// print array over serial
 {
@@ -155,22 +173,13 @@ void printArray(char* inArray, int arraySize)	// print array over serial
 	MYSERIAL.println("****end of array****");
 }
 
-//void overwriteArray(int* inArray, int arraySize, int val)		// overwrite array with value
-//{
-//	int w;
-//	for(w=0;w<arraySize;w++)
-//	{
-//		inArray[w]=val;
-//	}
-//}
-
-
-bool isEven(int n)
+void overwriteArray(int* inArray, int arraySize, int val)		// overwrite array with value
 {
-	if (n % 2 == 0)
-		return 1;
-	else
-		return 0;
+	int w;
+	for(w=0;w<arraySize;w++)
+	{
+		inArray[w]=val;
+	}
 }
 
 // VARIABLE MAPPING

@@ -17,7 +17,7 @@
 #include <FingerLib.h>			// for MYSERIAL
 #include "Globals.h"
 #include "Demo.h"
-#include "GripControl.h"
+#include "Animation.h"
 #include "MotorControl.h"
 #include "TimerManagement.h"
 

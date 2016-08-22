@@ -19,11 +19,10 @@
 
 #include "Globals.h"
 
-#include "GripControl.h"
-#include "CircleBuff.h"
+#include "Animation.h"
 #include "Demo.h"
-#include "EMGControl.h"
 #include "MotorControl.h"
+#include "MuscleSense.h"
 #include "PinManagement.h"
 #include "SerialControl.h"
 #include "TimerManagement.h"
@@ -40,6 +39,7 @@
 
 
 
+
 /***************************************************************************************************
 *
 *	Open Bionics - Artichoke Release Notes
@@ -49,7 +49,6 @@
 *	V1.0.1	|	03/02/16	|	Modified formatting and cleaned up
 *	V1.1.0	|	31/03/16	|	Added research and HANDle mode. Fixed motorEn and muscle graph
 *	V1.1.1	|	17/05/16	|	Increased PWM timer freq to prevent hum and implemented customDelay() instead of delay()		
-*	V1.2.0	|	22/08/16	|	Re-written EMG control (now allows both 1 & 2 channel control)
 *
 *
 *	Artichoke Description
@@ -78,13 +77,14 @@ void setup()
 	IOconfig();					// config finger pins, initialise port expander
 
 	startUpMessages();			// print welcome message, current hand configuration/settings
-} 
+}
 
 void loop()
 {
+	if (advancedSettings.muscleGraphFlag)		// print muscle data over serial
+		muscleGraph();
 	if (advancedSettings.muscleCtrlFlag > 0)	// muscle/EMG control
-		runEMG();
-
+		muscleControl();
 	if (demoFlag)								// demo mode
 		demoMode();
 

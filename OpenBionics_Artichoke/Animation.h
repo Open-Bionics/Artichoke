@@ -9,15 +9,15 @@
 *	GitHub - https://github.com/Open-Bionics
 *	Email - ollymcbride@openbionics.com
 *
-*	GripControl.h
+*	Animation.h
 *
 */
 
-#ifndef _GRIPCONTROL_H_
-#define _GRIPCONTROL_H_
+#ifndef _ANIMATION_H_
+#define _ANIMATION_H_
 
 void gripMovement(int gripNum, int inPos, int dir, int speed);
 void gripMovement(int gripNum, int inPos);
 
 
-#endif /*_GRIPCONTROL_H_*/
+#endif /*_ANIMATION_H_*/
