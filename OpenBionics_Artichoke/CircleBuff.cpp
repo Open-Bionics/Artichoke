@@ -1,0 +1,173 @@
+/*	Avocado - Open Bionics
+*	Author - Olly McBride
+*	Date - December 2015
+*
+*	This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+*	To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+*
+*	UNO_ADC.cpp
+*
+*/
+
+#include <Arduino.h>			// for type definitions
+#include "CircleBuff.h"
+
+
+#ifdef ENABLE_CBUFF_PRINT
+#include <FingerLib.h>
+#endif
+
+// create an instance of a circular buffer of size 'size' (size must be a power or 2)
+CIRCLE_BUFFER::CIRCLE_BUFFER(uint16_t size)
+{
+	// if buffer size is not a power of 2, increase size until it is
+	while(!isPowerOfTwo(size))
+		size ++;
+				
+	// limit array size to maximum allocated size
+	if(size > C_BUFF_MAX_SIZE)
+		size = C_BUFF_MAX_SIZE;
+		
+	// set circle buffer size
+	buffSize = size;
+	buffSizeMask = (buffSize-1);
+
+	// initialise read/write index
+ 	readIndex = 0;
+ 	writeIndex = 0;
+	
+	// clear math variables
+	total = 0;
+	mean = 0;
+}
+
+
+// Public Methods //////////////////////////////////////////////////////////////
+
+// read the first (oldest) value from the buffer and increment read index
+uint16_t CIRCLE_BUFFER::read(void)
+{
+	return buff[readIndex++ & buffSizeMask];
+}
+
+// same as above but don't increment read index (take a small peek, but don't affect the index)
+uint16_t CIRCLE_BUFFER::readGlimpse(void)
+{
+	return buff[readIndex & buffSizeMask];
+}
+
+// read a specific element within the buffer
+uint16_t CIRCLE_BUFFER::readElement(uint16_t index)
+{
+	return buff[index];
+}
+
+// read the mean of the buffer
+uint32_t CIRCLE_BUFFER::readMean(void)
+{
+	return mean;
+}
+
+// read the total/sum of the buffer
+uint32_t CIRCLE_BUFFER::readTotal(void)
+{
+	return total;
+}
+
+// read the actual buffer size (power of 2)
+uint16_t CIRCLE_BUFFER::readBufferSize(void)
+{
+	return buffSize;
+}
+
+//// write to the buffer, recalculate the total and the mean
+//void CIRCLE_BUFFER::write(uint16_t value)
+//{
+//	// remove first value from total, then add new value and calculate mean
+//	// if standard dev is enabled, calculate standard dev
+//	
+//	total -= (uint32_t) buff[writeIndex & buffSizeMask];			// remove last value from total
+//	total += (uint32_t) value;										// add new value to total
+//	mean = (uint32_t) total/(uint32_t)buffSize;						// calculate new mean
+//	buff[writeIndex++ & buffSizeMask] = value;						// add new value to buffer	
+//}
+
+// write to the buffer, recalculate the total and the mean
+void CIRCLE_BUFFER::write(uint16_t value)
+{
+	// remove first value from total, then add new value and calculate mean
+	// if standard dev is enabled, calculate standard dev
+
+	total -= (uint32_t)buff[writeIndex & buffSizeMask];				// remove last value from total
+	total += (uint32_t)value;										// add new value to total
+
+#ifdef USE_STD_DEV
+	standardDev.total -= sq((uint32_t)buff[writeIndex & buffSizeMask] - mean);		// subtract oldest value from standardDev total, using the previous mean (square the difference of the value and the mean)
+#endif
+
+	mean = (uint32_t)total / (uint32_t)buffSize;					// calculate new mean
+
+#ifdef USE_STD_DEV
+	standardDev.total += sq((uint32_t)value - mean);				// add new value from standardDev total, using the updated mean (square the difference of the value and the mean)
+	standardDev.mean = standardDev.total / (uint32_t)buffSize;		// calcualte mean of the resulting differences
+#endif
+
+	buff[writeIndex++ & buffSizeMask] = value;						// add new value to buffer	
+}
+
+uint16_t CIRCLE_BUFFER::getCurrentReadIndex(void)
+{
+	return readIndex;
+}
+
+uint16_t CIRCLE_BUFFER::getCurrentWriteIndex(void)
+{
+	return writeIndex;
+}
+
+#ifdef ENABLE_CBUFF_PRINT
+// print the contents of the buffer
+void CIRCLE_BUFFER::printBuff(void)
+{
+	int i;
+	
+	MYSERIAL.print("Printing buffer of size ");
+	MYSERIAL.print(buffSize);
+	MYSERIAL.println(" bytes");
+	for(i=0;i<buffSize;i++)
+	{
+		MYSERIAL.print("index ");
+		MYSERIAL.print(i);
+		MYSERIAL.print("  \tval ");
+		MYSERIAL.println(buff[i]);
+	}
+	
+	MYSERIAL.print("\nTotal ");
+	MYSERIAL.print(total);
+	MYSERIAL.print(" \tMean ");
+	MYSERIAL.println(mean);
+	
+	
+	MYSERIAL.println("******* COMPLETE ********");
+}
+#endif
+
+// destroy the buffer by freeing the memory
+void CIRCLE_BUFFER::destroy(void)
+{
+	free(buff);
+}
+
+#ifdef USE_STD_DEV
+uint32_t CIRCLE_BUFFER::readStardardDev(void)
+{
+	return standardDev.mean;
+}
+#endif
+
+// Private Methods //////////////////////////////////////////////////////////////
+// return 1 if 'x' is a power of 2
+bool CIRCLE_BUFFER::isPowerOfTwo(uint16_t x)
+{
+	return ((x & (x - 1)) == 0);
+}

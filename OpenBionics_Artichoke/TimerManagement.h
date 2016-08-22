@@ -21,4 +21,41 @@ void milliSecInterrupt(void);
 double customSeconds(void);
 bool customDelay(double delVal);
 
+
+
+// NON_BLOCKING DELAY CLASS
+class NB_DELAY
+{
+public:
+	NB_DELAY();
+	void start(long delVal);
+	bool finished(void);
+	bool started(void);
+	long now(void);
+	void stop(void);
+
+	bool timeEllapsed(long delVal);
+private:
+	long _startTime;
+	long _interval;
+	bool _started = false;
+};
+
+// NON_BLOCKING TIMER CLASS
+class NB_TIMER
+{
+public:
+	NB_TIMER();
+	void start(void);
+	bool started(void);
+	long now(void);
+	long stop(void);
+
+	bool timeEllapsed(long interval);
+private:
+	long _startTime;
+	bool _started = false;
+
+};
+
 #endif /*_TIMER_MANAGEMENT_H_*/

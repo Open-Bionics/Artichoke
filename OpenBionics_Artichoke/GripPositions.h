@@ -9,12 +9,12 @@
 *	GitHub - https://github.com/Open-Bionics
 *	Email - ollymcbride@openbionics.com
 *
-*	AnimationPositions.h
+*	GripPositions.h
 *
 */
 
-#define ANIM_COUNT_LOC    0
-#define NUM_ANIM_STEPS    4
+#define GRIP_COUNT_LOC    0
+#define NUM_GRIP_STEPS    4
 
 /* The following array is used to pause a finger at a particular position within a grip movement
  * and is a replacement for a lookup table.
@@ -23,14 +23,14 @@
  * F0 - F4  - max/min target positions for each finger
  * 
  * The function gripMovement() maps an input position value (0-100) to a finger position relating
- * to the animation[][][] array. This is used to allow for the fingers to pause at a position whilst
+ * to the gripPos[][][] array. This is used to allow for the fingers to pause at a position whilst
  * performing a grip movement.
  * 
  * For a more detailed explanation, have a look at our 'Grip Patterns' tutorial on www.openbionics.com/tutorials
  * 
  */
 
-int animation[NUM_GRIPS][NUM_ANIM_STEPS][(NUM_FINGERS*2)+1] =	// 3D array holding animation sequences
+int gripPos[NUM_GRIPS][NUM_GRIP_STEPS][(NUM_FINGERS*2)+1] =	// 3D array holding gripPos sequences
 {
 	{	// FIST
 		//COUNT		F0				F1				F2				F3				F4
