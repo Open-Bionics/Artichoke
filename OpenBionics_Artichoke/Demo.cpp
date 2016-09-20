@@ -27,7 +27,7 @@ int gripSpeed = 230;
 
 void demoMode(void)
 {
-	MYSERIAL.println("Demo starting");
+	MYSERIAL_PRINTLN_PGM("Demo starting");
 	
 	printGrip(FIST_GRIP,OPEN);
 	gripMovement(FIST_GRIP,BLANK,OPEN, gripSpeed);
@@ -133,13 +133,13 @@ void demoMode(void)
 	if(!advancedSettings.demoFlag)
 		demoFlag = 0;
 
-	MYSERIAL.println("Demo complete");
+	MYSERIAL_PRINTLN_PGM("Demo complete");
 	
 	// if demo mode is enabled from start up
 	if(advancedSettings.demoFlag)
 	{
-		MYSERIAL.println("\nStart up demo mode ON");
-		MYSERIAL.println("Enter A0 to disable this mode");
+		MYSERIAL_PRINTLN_PGM("\nStart up demo mode ON");
+		MYSERIAL_PRINTLN_PGM("Enter A0 to disable this mode");
 	}
 }
 
@@ -183,8 +183,8 @@ bool checkSerial(void)
 void printGrip(int grip, int dir)
 {
   #ifdef PRINT_DEMO_GRIP
-    MYSERIAL.print(textString.grips[grip]);
-    MYSERIAL.print(" ");
-    MYSERIAL.println(textString.open_close[dir]);
+    MYSERIAL_PRINT(textString.grips[grip]);
+    MYSERIAL_PRINT_PGM(" ");
+    MYSERIAL_PRINTLN(textString.open_close[dir]);
   #endif
 }

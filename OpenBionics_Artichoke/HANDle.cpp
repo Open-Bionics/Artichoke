@@ -18,7 +18,7 @@
 #include "Globals.h"
 
 #if defined(HANDLE_EN)
-#include "Wiichuck/Wiichuck.h"				// Nunchuck library, written by jnw.walker@gmail.com
+#include "Wiichuck.h"				// Nunchuck library, written by jnw.walker@gmail.com
 #include "HANDle.h"
 #include "GripControl.h"
 #include "TimerManagement.h"
@@ -41,12 +41,12 @@ void HANDleMain(void)
 		Wire.begin();
 		wii.init();
 
-		MYSERIAL.println("Calibrating mid position of joystick");
+		MYSERIAL_PRINTLN_PGM("Calibrating mid position of joystick");
 		wii.poll();
 		customDelay(100);
 		wii.poll();
 		wii.calibrate();  // calibration (needs a poll before hand to work)
-		MYSERIAL.println("Complete");
+		MYSERIAL_PRINTLN_PGM("Complete");
 		initialised = true;
 	}
 	
@@ -54,7 +54,7 @@ void HANDleMain(void)
 	
 	if(wii.buttonC()&&wii.buttonZ())				// if both buttons are pressed at the same time, calibrate mid position of the joystick
 	{
-		MYSERIAL.println("Calibrating mid position of joystick");
+		MYSERIAL_PRINTLN_PGM("Calibrating mid position of joystick");
 		wii.poll();
 		customDelay(100);
 		wii.poll();
@@ -67,10 +67,10 @@ void HANDleMain(void)
 		if(currentGrip >= NUM_GRIPS)
 			currentGrip = 0;
 
-		MYSERIAL.print("Grip number ");
-		MYSERIAL.print(currentGrip);
-		MYSERIAL.print("  ");
-		MYSERIAL.println(textString.grips[currentGrip]);
+		MYSERIAL_PRINT_PGM("Grip number ");
+		MYSERIAL_PRINT(currentGrip);
+		MYSERIAL_PRINT_PGM("  ");
+		MYSERIAL_PRINTLN(textString.grips[currentGrip]);
 		
 		customDelay(200);
 	}
@@ -80,10 +80,10 @@ void HANDleMain(void)
 		if(currentGrip < 0)
 			currentGrip = NUM_GRIPS-1;
 	
-			MYSERIAL.print("Grip number ");
-			MYSERIAL.print(currentGrip);
-			MYSERIAL.print("  ");
-			MYSERIAL.println(textString.grips[currentGrip]);
+			MYSERIAL_PRINT_PGM("Grip number ");
+			MYSERIAL_PRINT(currentGrip);
+			MYSERIAL_PRINT_PGM("  ");
+			MYSERIAL_PRINTLN(textString.grips[currentGrip]);
 		
 		customDelay(200);
 	}	
@@ -92,10 +92,10 @@ void HANDleMain(void)
 	
 	if(HANDleSerialFlag)
 	{
-		MYSERIAL.print("Grip ");
-		MYSERIAL.print(currentGrip);
-		MYSERIAL.print("  \tjoyPos ");
-		MYSERIAL.print(yPos);
+		MYSERIAL_PRINT_PGM("Grip ");
+		MYSERIAL_PRINT(currentGrip);
+		MYSERIAL_PRINT_PGM("  \tjoyPos ");
+		MYSERIAL_PRINT(yPos);
 	}
 	
 	yPos = constrain(yPos,-90,90);
@@ -118,10 +118,10 @@ void HANDleMain(void)
 	
 	if(HANDleSerialFlag)
 	{
-		MYSERIAL.print("  \tHANDle pos ");
-		MYSERIAL.print(yPos);
-		MYSERIAL.print("  \tHand pos ");
-		MYSERIAL.println((int) HANDlePos);
+		MYSERIAL_PRINT_PGM("  \tHANDle pos ");
+		MYSERIAL_PRINT(yPos);
+		MYSERIAL_PRINT_PGM("  \tHand pos ");
+		MYSERIAL_PRINTLN((int) HANDlePos);
 	}
 	else
 	{
@@ -134,8 +134,8 @@ void HANDleMain(void)
 void toggleHANDleSerial(void)
 {
 	HANDleSerialFlag = !HANDleSerialFlag;
-	MYSERIAL.print("HANDle Serial ");
-	MYSERIAL.println(textString.disabled_enabled[HANDleSerialFlag]);
+	MYSERIAL_PRINT_PGM("HANDle Serial ");
+	MYSERIAL_PRINTLN(textString.disabled_enabled[HANDleSerialFlag]);
 }
 
 #endif /*HANDLE_EN*/

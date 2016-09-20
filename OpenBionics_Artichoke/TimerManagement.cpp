@@ -49,16 +49,17 @@ double customSeconds(void)
 
 bool customDelay(double delVal)
 {
-	static double _prevTime = 0;
+	double _prevTime = 0;
 
 	_prevTime = customMillis();
 
-	while ((customMillis() - _prevTime) <= delVal);
+	while ((customMillis() - _prevTime) <= delVal)
+	{
+		delay(1);
+	}
 
 	return true;
 }
-
-
 
 
 
@@ -116,6 +117,10 @@ bool NB_DELAY::timeEllapsed(long delVal)
 	{
 		start(delVal);		// restart timer
 		return true;		// duration has ellapsed, so restart timer and return true
+	}
+	else
+	{
+		return false;
 	}
 }
 

@@ -306,8 +306,8 @@ void proportionalEMGControl(void)
 	}
 #endif
 
-	//MYSERIAL.print("pos: ");
-	//MYSERIAL.println(pos);
+	//MYSERIAL_PRINT_PGM("pos: ");
+	//MYSERIAL_PRINTLN_PGM(pos);
 
 	pos = constrain(pos, 0, 100);
 
@@ -325,8 +325,8 @@ void proportionalEMGControl(void)
 		pos -= calcPosChange(EMG[1].signal);
 	}
 
-	//MYSERIAL.print("pos: ");
-	//MYSERIAL.println(pos);
+	//MYSERIAL_PRINT_PGM("pos: ");
+	//MYSERIAL_PRINTLN_PGM(pos);
 
 	pos = constrain(pos, 0, 100);
 
@@ -350,19 +350,19 @@ double calcPosChange(uint16_t sample)
 	if (isEven(power))				// fix issue that -x^2 = x?^2 
 		invert = true;
 
-	//MYSERIAL.print("samp: ");
-	//MYSERIAL.print(sample);
-	//MYSERIAL.print("\tpower: ");
-	//MYSERIAL.print(power);
-	//MYSERIAL.print("\tk: ");
-	//MYSERIAL.print(k);
+	//MYSERIAL_PRINT_PGM("samp: ");
+	//MYSERIAL_PRINT_PGM(sample);
+	//MYSERIAL_PRINT_PGM("\tpower: ");
+	//MYSERIAL_PRINT_PGM(power);
+	//MYSERIAL_PRINT_PGM("\tk: ");
+	//MYSERIAL_PRINT_PGM(k);
 
 
 	// calculate position change as exponent (sensitivity is x^power proportional to _yPos)
 	exp = pow(sample, power) / k;
 
-	//MYSERIAL.print("exp: ");
-	//MYSERIAL.println(exp);
+	//MYSERIAL_PRINT_PGM("exp: ");
+	//MYSERIAL_PRINTLN_PGM(exp);
 
 	if (invert)						// fix issue that -x^2 = x?^2
 		exp = -exp;

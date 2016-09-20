@@ -15,6 +15,8 @@
 
 #include <Arduino.h>			// for type definitions
 #include <FingerLib.h>			// for MYSERIAL
+#include "Globals.h"
+
 #include "Utils.h"
 
 // PIN TOGGLING
@@ -134,12 +136,12 @@ void printArray(int* inArray, int arraySize)	// print array over serial
 	int w;
 	for(w=0;w<arraySize;w++)
 	{
-		MYSERIAL.print(w);
-		MYSERIAL.print(" ");
-		MYSERIAL.println(inArray[w]);
-		//(inArray[w]==2)?MYSERIAL.println("-"):MYSERIAL.println(textString.open_close[inArray[w]]);
+		MYSERIAL_PRINT(w);
+		MYSERIAL_PRINT_PGM(" ");
+		MYSERIAL_PRINTLN(inArray[w]);
+		//(inArray[w]==2)?MYSERIAL_PRINTLN_PGM("-"):MYSERIAL_PRINTLN_PGM(textString.open_close[inArray[w]]);
 	}
-	MYSERIAL.println("****end of array****");
+	MYSERIAL_PRINTLN_PGM("****end of array****");
 }
 
 void printArray(char* inArray, int arraySize)	// print array over serial
@@ -147,12 +149,12 @@ void printArray(char* inArray, int arraySize)	// print array over serial
 	int w;
 	for(w=0;w<arraySize;w++)
 	{
-		MYSERIAL.print(w);
-		MYSERIAL.print(" ");
-		MYSERIAL.println(inArray[w]);
-		//(inArray[w]==2)?MYSERIAL.println("-"):MYSERIAL.println(textString.open_close[inArray[w]]);
+		MYSERIAL_PRINT(w);
+		MYSERIAL_PRINT_PGM(" ");
+		MYSERIAL_PRINTLN(inArray[w]);
+		//(inArray[w]==2)?MYSERIAL_PRINTLN_PGM("-"):MYSERIAL_PRINTLN_PGM(textString.open_close[inArray[w]]);
 	}
-	MYSERIAL.println("****end of array****");
+	MYSERIAL_PRINTLN_PGM("****end of array****");
 }
 
 //void overwriteArray(int* inArray, int arraySize, int val)		// overwrite array with value

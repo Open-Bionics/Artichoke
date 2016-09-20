@@ -15,6 +15,7 @@
 
 #ifdef ENABLE_CBUFF_PRINT
 #include <FingerLib.h>
+#include "Globals.h"
 #endif
 
 // create an instance of a circular buffer of size 'size' (size must be a power or 2)
@@ -131,24 +132,24 @@ void CIRCLE_BUFFER::printBuff(void)
 {
 	int i;
 	
-	MYSERIAL.print("Printing buffer of size ");
-	MYSERIAL.print(buffSize);
-	MYSERIAL.println(" bytes");
+	MYSERIAL_PRINT_PGM("Printing buffer of size ");
+	MYSERIAL_PRINT(buffSize);
+	MYSERIAL_PRINTLN_PGM(" bytes");
 	for(i=0;i<buffSize;i++)
 	{
-		MYSERIAL.print("index ");
-		MYSERIAL.print(i);
-		MYSERIAL.print("  \tval ");
-		MYSERIAL.println(buff[i]);
+		MYSERIAL_PRINT_PGM("index ");
+		MYSERIAL_PRINT(i);
+		MYSERIAL_PRINT_PGM("  \tval ");
+		MYSERIAL_PRINTLN(buff[i]);
 	}
 	
-	MYSERIAL.print("\nTotal ");
-	MYSERIAL.print(total);
-	MYSERIAL.print(" \tMean ");
-	MYSERIAL.println(mean);
+	MYSERIAL_PRINT_PGM("\nTotal ");
+	MYSERIAL_PRINT(total);
+	MYSERIAL_PRINT_PGM(" \tMean ");
+	MYSERIAL_PRINTLN(mean);
 	
 	
-	MYSERIAL.println("******* COMPLETE ********");
+	MYSERIAL_PRINTLN_PGM("******* COMPLETE ********");
 }
 #endif
 

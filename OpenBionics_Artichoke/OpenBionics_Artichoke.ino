@@ -33,9 +33,10 @@
 #include <I2C_ADC.h>			// This library can be downloaded from https://github.com/Open-Bionics
 #endif
 
+
 #ifdef HANDLE_EN
+#include "Wiichuck.h"			// Nunchuck library, written by jnw.walker@gmail.com	
 #include "HANDle.h"
-#include "Wiichuck\Wiichuck.h"				// Nunchuck library, written by jnw.walker@gmail.com
 #endif
 
 

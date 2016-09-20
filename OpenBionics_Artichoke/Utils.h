@@ -49,17 +49,17 @@ int convertFromCSV(char *inString, int *valArray);
 template <class T> int EEPROM_writeStruct(int ee, const T& value)
 {
 	#ifdef EEPROM_DEBUG
-	MYSERIAL.println("EEPROM_writeStruct");		
+	MYSERIAL_PRINTLN_PGM("EEPROM_writeStruct");		
 	#endif
 	const byte* p = (const byte*)(const void*)&value;
 	unsigned int i;
 	for (i = 0; i < sizeof(value); i++)
 	{
 		#ifdef EEPROM_DEBUG
-		MYSERIAL.print("addr ee ");		
-		MYSERIAL.print(ee);				
-		MYSERIAL.print("     val *p ");	
-		MYSERIAL.println(*p);				
+		MYSERIAL_PRINT_PGM("addr ee ");		
+		MYSERIAL_PRINT_PGM(ee);				
+		MYSERIAL_PRINT_PGM("     val *p ");	
+		MYSERIAL_PRINTLN_PGM(*p);				
 		#endif
 		EEPROM.write(ee++, *p++);
 	}
@@ -70,7 +70,7 @@ template <class T> int EEPROM_writeStruct(int ee, const T& value)
 template <class T> int EEPROM_readStruct(int ee, T& value)
 {
 	#ifdef EEPROM_DEBUG
-	MYSERIAL.println("EEPROM_readStruct");		
+	MYSERIAL_PRINTLN_PGM("EEPROM_readStruct");		
 	#endif
 	byte* p = (byte*)(void*)&value;
 	unsigned int i;
@@ -78,10 +78,10 @@ template <class T> int EEPROM_readStruct(int ee, T& value)
 	{
 		*p++ = EEPROM.read(ee++);
 		#ifdef EEPROM_DEBUG
-		MYSERIAL.print("addr ee ");			
-		MYSERIAL.print(ee-1);				
-		MYSERIAL.print("     val *p ");		
-		MYSERIAL.println(*(p-1));			
+		MYSERIAL_PRINT_PGM("addr ee ");			
+		MYSERIAL_PRINT_PGM(ee-1);				
+		MYSERIAL_PRINT_PGM("     val *p ");		
+		MYSERIAL_PRINTLN_PGM(*(p-1));			
 		#endif
 	}
 	
@@ -91,7 +91,7 @@ template <class T> int EEPROM_readStruct(int ee, T& value)
 template <class T> int clearStruct(T& value, int newVal)
 {
 	#ifdef EEPROM_DEBUG
-	MYSERIAL.println("clearStruct");		
+	MYSERIAL_PRINTLN_PGM("clearStruct");		
 	#endif
 	byte* p = (byte*)(void*)&value;
 	unsigned int i;
@@ -99,8 +99,8 @@ template <class T> int clearStruct(T& value, int newVal)
 	{
 		*p++ = newVal;
 		#ifdef EEPROM_DEBUG		
-		MYSERIAL.print("     val *p ");		
-		MYSERIAL.println(*(p-1));				
+		MYSERIAL_PRINT_PGM("     val *p ");		
+		MYSERIAL_PRINTLN_PGM(*(p-1));				
 		#endif
 	}
 	
